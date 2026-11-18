@@ -10,7 +10,7 @@
    ===================================================================== */
 
 body {
-    font-family: Typewriter, "Times New Roman", serif;
+    font-family: 'Typewriter', 'American Typewriter', 'Courier New', Courier, monospace;
     background-color: #A1B5D8;
     color: ##63717E;
     margin: 0;
@@ -27,11 +27,7 @@ nav {
 /* every image inside the menu is forced to the same height.
    If your images still look different sizes, their WIDTHS are
    different: go back to Excel and make every cell the same size. */
-nav img {
-    height: 50px;
-    margin: 4px;
-    vertical-align: middle;
-}
+
 
 /* no underline or border around the image links */
 nav a {
