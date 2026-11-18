@@ -37,7 +37,248 @@
 <!-- ===== SAVE THIS SPACE ==============================================
      This box is empty on purpose. Leave it here. We will use it later.
      ===================================================================== -->
-<div class="showcase"></div>
+<div <!-- HTML: the title, the map with its coastline and state borders, and the popup text box (the pins are added by the JavaScript below) -->
+<div class="sc-wrap">
+  <div class="sc-head">My West Coast Road Trip</div>
+  <div class="sc-sub">Tap a pin to see what we did</div>
+
+  <div class="sc-map">
+    <svg class="sc-svg" viewBox="0 0 340 400" role="img" aria-label="Stylized map of the Pacific coast from Washington down to Northern California, with the ocean on the left">
+      <path d="M150 0 C140 30,165 55,150 85 S130 125,148 155 S122 200,140 235 S118 275,138 305 S112 350,124 400 L340 400 L340 0 Z" fill="#63717E" fill-opacity="0.3" stroke="#63717E" stroke-width="2"/>
+      <line x1="150" y1="32" x2="340" y2="32" stroke="#63717E" stroke-width="1" stroke-dasharray="4 4"/>
+      <line x1="125" y1="297" x2="340" y2="297" stroke="#63717E" stroke-width="1" stroke-dasharray="4 4"/>
+      <path d="M20 60 q10 -6 20 0 t20 0" fill="none" stroke="#A1B5D8" stroke-width="2"/>
+      <path d="M35 140 q10 -6 20 0 t20 0" fill="none" stroke="#A1B5D8" stroke-width="2"/>
+      <path d="M15 250 q10 -6 20 0 t20 0" fill="none" stroke="#A1B5D8" stroke-width="2"/>
+      <path d="M30 340 q10 -6 20 0 t20 0" fill="none" stroke="#A1B5D8" stroke-width="2"/>
+      <text x="12" y="200" font-size="9">PACIFIC</text>
+      <text x="12" y="211" font-size="9">OCEAN</text>
+      <text x="332" y="44" font-size="9" text-anchor="end">WASHINGTON</text>
+      <text x="332" y="190" font-size="9" text-anchor="end">OREGON</text>
+      <text x="332" y="345" font-size="9" text-anchor="end">CALIFORNIA</text>
+    </svg>
+
+    <div class="sc-pop" aria-live="polite">
+      <button class="sc-close" type="button" aria-label="Close">&times;</button>
+      <div class="sc-title"></div>
+      <div class="sc-text"></div>
+    </div>
+  </div>
+</div>
+
+<!-- CSS: brand font and colors, map frame, upright-number teardrop pins, and the popup text box. Every rule starts with .showcase so nothing else on the page changes -->
+<style>
+  .showcase .sc-wrap {
+    font-family: 'Typewriter', 'American Typewriter', 'Courier New', Courier, monospace;
+    color: #63717E;
+    width: 100%;
+    max-width: 340px;
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+  .showcase .sc-wrap * { box-sizing: border-box; }
+  .showcase .sc-head {
+    font-size: 14px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-align: center;
+    padding-top: 2px;
+  }
+  .showcase .sc-sub {
+    font-size: 11px;
+    text-align: center;
+    padding: 2px 0 8px;
+  }
+  .showcase .sc-map {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 17 / 20;
+    background: #dbe4f3;
+    border: 2px solid #63717E;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .showcase .sc-svg { display: block; width: 100%; height: 100%; }
+  .showcase .sc-svg text {
+    fill: #63717E;
+    font-family: inherit;
+    letter-spacing: 1px;
+  }
+
+  /* pins */
+  .showcase .sc-pin {
+    position: absolute;
+    width: 22px;
+    height: 24px;
+    margin: -24px 0 0 -11px;
+    padding: 0;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .showcase .sc-pin::before {
+    content: "";
+    position: absolute;
+    left: 1px;
+    top: 0;
+    width: 20px;
+    height: 20px;
+    background: #A1B5D8;
+    border: 2px solid #63717E;
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    transition: background 0.15s;
+  }
+  .showcase .sc-pin span {
+    position: relative;
+    display: block;
+    width: 22px;
+    font-size: 10px;
+    font-weight: bold;
+    line-height: 20px;
+    text-align: center;
+    color: #63717E;
+  }
+  .showcase .sc-pin:hover::before,
+  .showcase .sc-pin:focus-visible::before { background: #fff; }
+  .showcase .sc-pin:focus-visible { outline: none; }
+  .showcase .sc-pin.sc-active { z-index: 2; }
+  .showcase .sc-pin.sc-active::before { background: #63717E; }
+  .showcase .sc-pin.sc-active span { color: #fff; }
+
+  /* popup text box */
+  .showcase .sc-pop {
+    display: none;
+    position: absolute;
+    left: 6px;
+    right: 6px;
+    max-height: 44%;
+    padding: 8px 28px 8px 10px;
+    background: #f6f8fc;
+    border: 2px solid #63717E;
+    border-left: 6px solid #A1B5D8;
+    border-radius: 8px;
+    overflow-y: auto;
+    z-index: 5;
+  }
+  .showcase .sc-pop.sc-open { display: block; }
+  .showcase .sc-pop.sc-top { top: 8px; }
+  .showcase .sc-pop.sc-bottom { bottom: 8px; }
+  .showcase .sc-title { font-size: 13px; font-weight: bold; margin-bottom: 4px; }
+  .showcase .sc-text { font-size: 12px; line-height: 1.4; }
+  .showcase .sc-close {
+    position: absolute;
+    top: 2px;
+    right: 4px;
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    background: none;
+    border: 0;
+    color: #63717E;
+    font-family: inherit;
+    font-size: 18px;
+    line-height: 20px;
+    cursor: pointer;
+  }
+</style>
+
+<!-- JavaScript: holds every stop (position and story), builds the pins, and shows or hides the popup when a pin is clicked -->
+<script>
+  (function () {
+    var wrap = document.querySelector('.showcase .sc-wrap');
+    if (!wrap) return;
+
+    var map = wrap.querySelector('.sc-map');
+    var pop = wrap.querySelector('.sc-pop');
+    var title = wrap.querySelector('.sc-title');
+    var text = wrap.querySelector('.sc-text');
+    var closeBtn = wrap.querySelector('.sc-close');
+
+    // Edit stops here. x and y are the pin's position on the map in percent (0 to 100).
+    var stops = [
+      { n: 'Woodinville, WA', x: 77.1, y: 6.0,
+        t: 'Where it all began. We loaded up the truck, pointed it south, and set off on the long drive toward the coast.' },
+      { n: 'Honeydew, CA', x: 70.6, y: 96.0,
+        t: "Our farthest-south stop, at Henrik's uncle's house tucked away in the hills of Northern California. We visited, then turned around and started the trip north along the coast." },
+      { n: 'Wilson Creek Beach, CA', x: 40.6, y: 90.5,
+        t: 'Our first beach stop of the trip. After a long drive we stretched our legs, walked the shoreline, and got our first real taste of the Pacific.' },
+      { n: 'Crescent City, CA', x: 47.1, y: 84.0,
+        t: 'A lunch stop in this harbor town, plus a lighthouse to check out while we were there. The first of several lighthouses on the trip.' },
+      { n: 'Jedediah Smith Redwoods', x: 41.8, y: 77.5,
+        t: 'We walked in among the giant redwoods, where the trees are enormous and the forest is so quiet that everything else fades away.' },
+      { n: 'Chetco River, OR', x: 49.4, y: 71.0,
+        t: 'Our first night sleeping in the truck, near the river. At 6 A.M. a man yelling outside woke us up, so we decided to get out of there and start the day early.' },
+      { n: 'Meyers Creek Beach, OR', x: 42.9, y: 64.5,
+        t: 'Our early start put us ahead of schedule, so we caught this hazy beach at low tide. We wandered across the rocks and found starfish and sea urchins.' },
+      { n: 'Prehistoric Gardens, OR', x: 50.0, y: 58.0,
+        t: 'A quick walk along a shady trail lined with life-size dinosaur statues, each with facts about the creature. Henrik got a good look up at the Brachiosaurus.' },
+      { n: 'Cape Blanco Lighthouse, OR', x: 44.1, y: 51.5,
+        t: 'The most memorable lighthouse of the trip, with a tour of the historic Hughes House. Our guide had every fact memorized word for word. Biggest lesson: have your house built by a Swedish man and it will last over 100 years.' },
+      { n: 'Florence, OR', x: 51.2, y: 45.0,
+        t: 'We stopped at the dunes, but dune buggies were racing through, so we only found one small quiet patch to walk around. After a while we just sat back and watched the buggies race.' },
+      { n: 'Heceta Head Lighthouse, OR', x: 45.9, y: 38.5,
+        t: 'One of the prettiest lighthouses on the coast, perched on a headland high above the ocean. A great place to stop and take in the view.' },
+      { n: 'Muriel O. Ponsler Viewpoint, OR', x: 52.4, y: 32.0,
+        t: 'We had dinner from the back of the truck and watched the sun set over the water. It was one of the best views of the whole trip.' },
+      { n: 'Siuslaw National Forest, OR', x: 46.5, y: 25.5,
+        t: 'Our second night on the road, parked on a quiet logging road in the forest. We woke up to a horse wandering nearby.' },
+      { n: "God's Thumb, OR", x: 54.1, y: 19.0,
+        t: 'A hike up to a rocky outcrop with a wide view over the coast. A good way to stretch our legs after days in the truck.' },
+      { n: 'Tillamook Factory, OR', x: 48.2, y: 12.5,
+        t: 'Our last stop. We toured the factory and finished the trip the best way possible: with ice cream.' }
+    ];
+
+    var pins = [];
+    var current = -1;
+
+    function hide() {
+      if (current > -1) pins[current].classList.remove('sc-active');
+      current = -1;
+      pop.classList.remove('sc-open');
+    }
+
+    function show(i) {
+      if (current > -1) pins[current].classList.remove('sc-active');
+      current = i;
+      pins[i].classList.add('sc-active');
+      title.textContent = (i + 1) + '. ' + stops[i].n;
+      text.textContent = stops[i].t;
+      pop.classList.remove('sc-top', 'sc-bottom');
+      // Put the popup on the opposite half of the map so it never covers the selected pin
+      pop.classList.add(stops[i].y >= 50 ? 'sc-top' : 'sc-bottom', 'sc-open');
+      pop.scrollTop = 0;
+    }
+
+    stops.forEach(function (s, i) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'sc-pin';
+      b.style.left = s.x + '%';
+      b.style.top = s.y + '%';
+      b.setAttribute('aria-label', 'Stop ' + (i + 1) + ': ' + s.n);
+      var label = document.createElement('span');
+      label.textContent = i + 1;
+      b.appendChild(label);
+      b.addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (current === i) { hide(); } else { show(i); }
+      });
+      map.appendChild(b);
+      pins.push(b);
+    });
+
+    pop.addEventListener('click', function (e) { e.stopPropagation(); });
+    closeBtn.addEventListener('click', hide);
+    map.addEventListener('click', hide);
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') hide();
+    });
+  })();
+</script>
+</div>
 
 <!-- Footer: fill in your name -->
 <footer>Built by Olivia Leamer &middot; <a href="mailto:oleamer@zagmail.gonzaga.edu">Email me</a> &middot; BMIS 235</footer>
