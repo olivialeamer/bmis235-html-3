@@ -51,6 +51,12 @@ p {
     line-height: 1.5;
 }
 
+main img {
+  max-width: 500px;
+  width: 100%;
+  height: auto;
+}
+
 footer {
     text-align: center;
     font-size: 14px;
