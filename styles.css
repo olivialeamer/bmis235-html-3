@@ -1,41 +1,56 @@
 /* =====================================================================
    styles.css  ·  YOUR BRAND
-   ---------------------------------------------------------------------
-   This one file is your brand guide. Every page that links to it gets
-   the same font, the same colors and the same spacing.
-   Change a color here once, and every page changes.
-
-   Use the same font and colors you picked for your Excel menu images,
-   so the menu and the pages look like one brand.
+   Change a color in :root once and every page changes.
    ===================================================================== */
+
+:root {
+    --blue-slate: #63717E;
+    --powder-blue: #A1B5D8;
+    --porcelain: #FFFCF7;
+    --frosted-mint: #E4F0D0;
+    --muted-olive: #A4C497;
+}
 
 body {
     font-family: 'Typewriter', 'American Typewriter', 'Courier New', Courier, monospace;
-    background-color: #A1B5D8;
-    color: ##63717E;
+    background-color: var(--porcelain);
+    color: var(--blue-slate);
     margin: 0;
     padding: 0 20px 40px 20px;
 }
 
 /* the menu at the top of every page */
 nav {
-    background-color: #A1B5D8;
-    padding: 14px;
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    background-color: var(--powder-blue);
+    padding: 10px;
+    margin: 0 -20px;
 }
 
-/* every image inside the menu is forced to the same height.
-   If your images still look different sizes, their WIDTHS are
-   different: go back to Excel and make every cell the same size. */
-
-
-/* no underline or border around the image links */
 nav a {
     text-decoration: none;
 }
 
+nav a:hover img {
+    opacity: 0.7;
+}
+
+/* menu buttons: change 40px to make them bigger or smaller */
+nav img {
+    height: 40px;
+    width: auto;
+    max-width: none;
+    margin: 0;
+    border-radius: 0;
+    display: block;
+}
+
 h1 {
-    color: #63717E;
+    color: var(--blue-slate);
     text-align: center;
     font-size: 40px;
 }
@@ -47,15 +62,25 @@ p {
     line-height: 1.5;
 }
 
+/* photos in the page content (the menu images are handled above) */
 img {
-  max-width: 500px;
-  width: 100%;
-  height: auto;
+    display: block;
+    max-width: 500px;
+    width: 100%;
+    height: auto;
+    margin: 20px auto;
+    border-radius: 8px;
+}
+
+a {
+    color: var(--blue-slate);
 }
 
 footer {
     text-align: center;
     font-size: 14px;
-    color: #777777;
-    margin-top: 40px;
+    color: var(--blue-slate);
+    background-color: var(--frosted-mint);
+    padding: 12px;
+    margin: 40px -20px -40px -20px;
 }
